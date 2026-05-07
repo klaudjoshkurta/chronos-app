@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import com.shkurta.chronos.ui.notifications.NotificationItem
+import com.shkurta.chronos.ui.notifications.NotificationListView
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -35,7 +37,11 @@ import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ClockScreen(onTimerClick: () -> Unit = {}, onCountdownClick: () -> Unit = {}) {
+fun ClockScreen(
+    onTimerClick: () -> Unit = {},
+    onCountdownClick: () -> Unit = {},
+    notifications: List<NotificationItem> = emptyList()
+) {
     var currentTime by remember { mutableStateOf(LocalTime.now()) }
 
     LaunchedEffect(Unit) {
@@ -47,7 +53,12 @@ fun ClockScreen(onTimerClick: () -> Unit = {}, onCountdownClick: () -> Unit = {}
 
     KeepScreenOn()
 
-    ClockDisplay(time = currentTime, onTimerClick = onTimerClick, onCountdownClick = onCountdownClick)
+    ClockDisplay(
+        time = currentTime,
+        onTimerClick = onTimerClick,
+        onCountdownClick = onCountdownClick,
+        notifications = notifications
+    )
 }
 
 @Composable
@@ -66,7 +77,8 @@ fun KeepScreenOn() {
 fun ClockDisplay(
     time: LocalTime,
     onTimerClick: () -> Unit = {},
-    onCountdownClick: () -> Unit = {}
+    onCountdownClick: () -> Unit = {},
+    notifications: List<NotificationItem> = emptyList()
 ) {
     val formatter = remember { DateTimeFormatter.ofPattern("HH:mm:ss") }
     val dateFormatter = remember { DateTimeFormatter.ofPattern("EEEE, MMMM d") }
@@ -92,6 +104,10 @@ fun ClockDisplay(
                 fontSize = 18.sp,
                 color = Color.Gray
             )
+            if (notifications.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(12.dp))
+                NotificationListView(notifications = notifications)
+            }
         }
 
         Column(
