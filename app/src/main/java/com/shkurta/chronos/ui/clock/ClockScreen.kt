@@ -5,12 +5,15 @@ import android.os.Build
 import android.view.WindowManager
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -32,19 +35,19 @@ import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ClockScreen() {
+fun ClockScreen(onTimerClick: () -> Unit = {}, onCountdownClick: () -> Unit = {}) {
     var currentTime by remember { mutableStateOf(LocalTime.now()) }
 
     LaunchedEffect(Unit) {
         while (true) {
             currentTime = LocalTime.now()
-            delay(1000L) // tick every second
+            delay(1000L)
         }
     }
 
     KeepScreenOn()
 
-    ClockDisplay(time = currentTime)
+    ClockDisplay(time = currentTime, onTimerClick = onTimerClick, onCountdownClick = onCountdownClick)
 }
 
 @Composable
@@ -60,7 +63,11 @@ fun KeepScreenOn() {
 }
 
 @Composable
-fun ClockDisplay(time: LocalTime) {
+fun ClockDisplay(
+    time: LocalTime,
+    onTimerClick: () -> Unit = {},
+    onCountdownClick: () -> Unit = {}
+) {
     val formatter = remember { DateTimeFormatter.ofPattern("HH:mm:ss") }
     val dateFormatter = remember { DateTimeFormatter.ofPattern("EEEE, MMMM d") }
     val date = remember(time) { LocalDate.now() }
@@ -85,6 +92,21 @@ fun ClockDisplay(time: LocalTime) {
                 fontSize = 18.sp,
                 color = Color.Gray
             )
+        }
+
+        Column(
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .padding(end = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalAlignment = Alignment.End
+        ) {
+            TextButton(onClick = onTimerClick) {
+                Text("Timer", color = Color.White.copy(alpha = 0.6f), fontSize = 14.sp)
+            }
+            TextButton(onClick = onCountdownClick) {
+                Text("Countdown", color = Color.White.copy(alpha = 0.6f), fontSize = 14.sp)
+            }
         }
     }
 }
