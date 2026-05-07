@@ -82,11 +82,19 @@ fun NotificationDetailDialog(item: NotificationItem, onDismiss: () -> Unit) {
                     }
                 }
                 Spacer(modifier = Modifier.height(12.dp))
-                TextButton(
-                    onClick = onDismiss,
-                    modifier = Modifier.align(Alignment.End)
+                Row(
+                    modifier = Modifier.align(Alignment.End),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    Text("Dismiss", color = Color.Gray)
+                    TextButton(onClick = onDismiss) {
+                        Text("Close", color = Color.Gray)
+                    }
+                    TextButton(onClick = {
+                        NotificationBus.cancelNotification(item.key)
+                        onDismiss()
+                    }) {
+                        Text("Dismiss", color = Color(0xFFFF6B6B))
+                    }
                 }
             }
         }

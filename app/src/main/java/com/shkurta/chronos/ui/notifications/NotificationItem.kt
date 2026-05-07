@@ -16,5 +16,6 @@ data class NotificationItem(
     val text: String,
     val timestamp: Long,
     val icon: Drawable?,
-    val actions: List<NotificationAction> = emptyList()
+    val actions: List<NotificationAction> = emptyList(),
+    val key: String = ""
 )

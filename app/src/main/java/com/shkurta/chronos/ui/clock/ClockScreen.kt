@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import com.shkurta.chronos.ui.media.MediaControlBar
+import com.shkurta.chronos.ui.media.MediaState
 import com.shkurta.chronos.ui.notifications.NotificationItem
 import com.shkurta.chronos.ui.notifications.NotificationListView
 import androidx.compose.runtime.Composable
@@ -40,7 +42,8 @@ import java.time.format.DateTimeFormatter
 fun ClockScreen(
     onTimerClick: () -> Unit = {},
     onCountdownClick: () -> Unit = {},
-    notifications: List<NotificationItem> = emptyList()
+    notifications: List<NotificationItem> = emptyList(),
+    mediaState: MediaState? = null
 ) {
     var currentTime by remember { mutableStateOf(LocalTime.now()) }
 
@@ -57,7 +60,8 @@ fun ClockScreen(
         time = currentTime,
         onTimerClick = onTimerClick,
         onCountdownClick = onCountdownClick,
-        notifications = notifications
+        notifications = notifications,
+        mediaState = mediaState
     )
 }
 
@@ -78,7 +82,8 @@ fun ClockDisplay(
     time: LocalTime,
     onTimerClick: () -> Unit = {},
     onCountdownClick: () -> Unit = {},
-    notifications: List<NotificationItem> = emptyList()
+    notifications: List<NotificationItem> = emptyList(),
+    mediaState: MediaState? = null
 ) {
     val formatter = remember { DateTimeFormatter.ofPattern("HH:mm:ss") }
     val dateFormatter = remember { DateTimeFormatter.ofPattern("EEEE, MMMM d") }
@@ -104,6 +109,10 @@ fun ClockDisplay(
                 fontSize = 18.sp,
                 color = Color.Gray
             )
+            mediaState?.let { state ->
+                Spacer(modifier = Modifier.height(12.dp))
+                MediaControlBar(state = state)
+            }
             if (notifications.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(12.dp))
                 NotificationListView(notifications = notifications)
